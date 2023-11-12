@@ -1,0 +1,39 @@
+import requests
+import tkinter as tk
+
+api_key = '8684c03729a675a01b8f967d03058cc8'
+
+def get_weather():
+    city = city_entry.get()
+    base_url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric'
+    response = requests.get(base_url)
+    data = response.json()
+    if data['cod'] == 200:
+        main_data = data['main']
+        weather_data = data['weather'][0]
+
+        temperature = main_data['temp']
+        humidity = main_data['humidity']
+        weather_condition = weather_data['description']
+
+        result_label.config(text=f'Weather in {city}:\nTemperature: {temperature}°C\nHumidity: {humidity}%\nWeather Condition: {weather_condition}')
+    else:
+        result_label.config(text=f'Unable to fetch weather data {city} or an error occurred.')
+
+root = tk.Tk()
+root.title('Weather App')
+root.geometry('400x300')
+root.config(bg='lightgray')
+
+city_label = tk.Label(root, text='Enter a city : ', bg='lightgray')
+city_label.pack(pady=5)
+city_entry = tk.Entry(root, borderwidth=2)
+city_entry.pack(pady=5)
+
+get_button = tk.Button(root, text='Get Weather', command=get_weather, bg='lightgray')
+get_button.pack(pady=5)
+
+result_label = tk.Label(root, text='', bg='lightgray')
+result_label.pack(pady=5)
+
+root.mainloop()
